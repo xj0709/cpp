@@ -14,35 +14,137 @@ public:
     }
 };
 
-TreeNode* CreateBinaryTree (int arr[], int size) {
-    if (!arr && size == 0) {
-        return NULL;
-    }
-    
-    TreeNode* root = new TreeNode(arr[0]);
-    queue<TreeNode*> q;
-    q.push(root);
-    
-    int i = 1;
-    //int arr[] = {10, 2, -1, 3, -1, -1, 15, -1, -1}; 3 15 2 10 
-    while (!q.empty() && i < size) {
-        TreeNode* currNode = q.front();
-        q.pop();
+class BinaryTree {
+private:
+    TreeNode* root;
 
-        if (arr[i] != -1) {
-            currNode->leftChild = new TreeNode(arr[i]);
-            q.push(currNode->leftChild);
+    void CreateTreeNode (int arr[], int size) {
+        if (arr == NULL || size == 0) {
+            return;
         }
-        i++;
+        if (root == NULL) {
+            root = new TreeNode(arr[0]);
+        }
 
-        if (i < size && arr[i] != -1) {
-            currNode->rightChild = new TreeNode(arr[i]);
-            q.push(currNode->rightChild);
+        queue<TreeNode*> q;
+        q.push(root);
+
+        int i = 1;
+        // {1, 2, 3, 4, 5, -1, -1}
+        while (!q.empty() && i < size) {
+            TreeNode* currNode = q.front();
+            q.pop();
+            cout<<"i="<<i<<endl;
+            if (arr[i] != -1) {
+                currNode->leftChild = new TreeNode(arr[i]);
+                q.push(currNode->leftChild);
+            }
+            i++;
+            if (arr[i] != -1 && i < size) {
+                currNode->rightChild = new TreeNode(arr[i]);
+                q.push(currNode->rightChild);
+            }
+            i++;
         }
-        i++;
+    
+        return;
     }
-    return root;
-}
+
+    void insert (int value) {
+        if (root == NULL) {
+            root = new TreeNode(value);
+        }
+
+        queue<TreeNode*> q;
+        q.push(root);
+
+        int i = 1;
+        // {1, 2, 3, 4, 5, -1, -1}
+        while (!q.empty()) {
+            TreeNode* currNode = q.front();
+            q.pop();
+            cout<<"data="<<currNode->data<<endl;
+            if (currNode->leftChild) {
+                q.push(currNode->leftChild);
+            }
+            else {
+                currNode->leftChild = new TreeNode(value);
+
+                return;
+            }
+
+            if (currNode->rightChild) {
+                q.push(currNode->rightChild);
+            }
+            else {
+                currNode->rightChild = new TreeNode(value);
+
+                return;
+            }
+        }
+    
+        return;
+    }
+
+    void layerTraversalInner (TreeNode* node) {
+        if (node == NULL) {
+            return;
+        }
+
+        queue<TreeNode*> q;
+        q.push(node);
+
+        while (!q.empty()) {
+            TreeNode* currNode = q.front();
+            q.pop();
+            cout<<currNode->data<<" ";
+
+            if (currNode->leftChild) {
+                q.push(currNode->leftChild);
+            }
+
+            if (currNode->rightChild) {
+                q.push(currNode->rightChild);
+            }
+        }
+    
+        return;
+    }
+    void preorderTraversalInner (TreeNode* node) {
+        if (node == NULL) {
+            return;
+        }
+
+        cout<<node->data<<" ";
+        preorderTraversalInner(node->leftChild);
+        preorderTraversalInner(node->rightChild);
+
+        return;
+    }
+public:
+    BinaryTree() : root(NULL) {}
+
+    void CreateBinaryTree(int arr[], int size) {
+        CreateTreeNode(arr, size);
+
+        return;
+    }
+    void insertNode (int value) {
+        insert(value);
+        return;
+    }
+    void preorderTraversal () {
+        preorderTraversalInner(root);
+        return;
+    }
+
+    void layerTraversal () {
+        layerTraversalInner(root);
+
+        return;
+    }
+};
+
 TreeNode* CreateBinaryTreeQueue (int arr[], int size) {
     if (size == 0 || !arr) {
         return NULL;
@@ -107,88 +209,21 @@ TreeNode* insert(TreeNode* root, int value) {
     return root;
 }
 
-void preorderTrave (TreeNode* node) {
-    if (node == NULL) {
-        return;
-    }
-
-    cout<<node->data<<" ";
-    inorderTrave(node->leftChild);
-
-    inorderTrave(node->rightChild);
-
-    return;
-}
-
-void inorderTrave (TreeNode* node) {
-    if (node == NULL) {
-        return;
-    }
-
-    inorderTrave(node->leftChild);
-    cout<<node->data<<" ";
-    inorderTrave(node->rightChild);
-
-    return;
-}
-
-
-class BinarySearchTree {
-private:
-    TreeNode* root;
-
-    TreeNode* insertRecrucive(TreeNode* node, int value) {
-        if (node == NULL) {
-            node = new TreeNode(value);
-            return node;
-        }
-        //cout<<"node->data:"<<node->data<<", value:"<<value<<endl;
-        if (value < node->data) {
-            node->leftChild = insertRecrucive(node->leftChild, value);
-        }
-        else if (value > node->data) {
-            node->rightChild = insertRecrucive(node->rightChild, value);
-        }
-    
-        return node;
-    }
-
-    void inorderTraversal (TreeNode* node) {
-        if (node == NULL) {
-            return;
-        }
-
-
-        inorderTraversal(node->leftChild);
-        // cout<<node->data<<" ";
-        inorderTraversal(node->rightChild);
-
-        return;
-    }
-public:
-    BinarySearchTree() : root(NULL) {}
-
-    void insertNode(int value) {
-        root = insertRecrucive(root, value);
-
-        return;
-    }
-    void inorderTraversal () {
-        inorderTraversal(root);
-        return;
-    }
-};
-
 int main()
 {
-    int arr[] = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, -1};
+    //int arr[] = {1, 2, 4, -1, -1, 5, -1, -1, 3, -1, -1};
+    int arr[] = {1, 2, 3, 4, 5,6,7};
     int size = sizeof(arr)/sizeof(arr[0]);
 
-    TreeNode* node = CreateBinaryTree(arr, size);
-    preorderTrave(node);
+    BinaryTree bt;
+    bt.CreateBinaryTree(arr, size);
     cout<<endl;
 
-    inorderTrave(node);
+    bt.preorderTraversal();
+    cout<<endl;
+
+    bt.insertNode(8);
+    bt.layerTraversal();
     cout<<endl;
 
     return 0;
