@@ -34,7 +34,7 @@ private:
         while (!q.empty() && i < size) {
             TreeNode* currNode = q.front();
             q.pop();
-            cout<<"i="<<i<<endl;
+            // cout<<"i="<<i<<endl;
             if (arr[i] != -1) {
                 currNode->leftChild = new TreeNode(arr[i]);
                 q.push(currNode->leftChild);
@@ -63,7 +63,7 @@ private:
         while (!q.empty()) {
             TreeNode* currNode = q.front();
             q.pop();
-            cout<<"data="<<currNode->data<<endl;
+            // cout<<"data="<<currNode->data<<endl;
             if (currNode->leftChild) {
                 q.push(currNode->leftChild);
             }
@@ -114,7 +114,26 @@ private:
         if (node == NULL) {
             return;
         }
+/*
+        queue<TreeNode*> q;
+        q.push(node);
+        TreeNode* currNode = NULL;
 
+        while(!q.empty()) {
+            currNode = q.front();
+            q.pop();
+
+            cout<<currNode->data<<" ";
+
+            while (currNode->leftChild) {
+                q.push(currNode->leftChild);
+            }
+
+            while (currNode->rightChild) {
+                q.push(currNode->rightChild);
+            }
+        }
+*/
         cout<<node->data<<" ";
         preorderTraversalInner(node->leftChild);
         preorderTraversalInner(node->rightChild);
@@ -134,11 +153,13 @@ public:
         return;
     }
     void preorderTraversal () {
+        cout<<"preorderTraversal: "<<endl;
         preorderTraversalInner(root);
         return;
     }
 
     void layerTraversal () {
+        cout<<"layerTraversal: "<<endl;
         layerTraversalInner(root);
 
         return;
