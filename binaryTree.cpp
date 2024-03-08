@@ -110,33 +110,102 @@ private:
     
         return;
     }
+
     void preorderTraversalInner (TreeNode* node) {
         if (node == NULL) {
             return;
         }
-/*
-        queue<TreeNode*> q;
-        q.push(node);
-        TreeNode* currNode = NULL;
 
-        while(!q.empty()) {
-            currNode = q.front();
-            q.pop();
+        stack<TreeNode*> st;
+        st.push(node);
 
+        while (!st.empty()) {
+            TreeNode* currNode = st.top();
+            st.pop();
             cout<<currNode->data<<" ";
-
-            while (currNode->leftChild) {
-                q.push(currNode->leftChild);
+            
+            if (currNode->rightChild) {
+                st.push(currNode->rightChild);
             }
 
-            while (currNode->rightChild) {
-                q.push(currNode->rightChild);
+            if (currNode->leftChild) {
+                st.push(currNode->leftChild);
             }
         }
-*/
-        cout<<node->data<<" ";
-        preorderTraversalInner(node->leftChild);
-        preorderTraversalInner(node->rightChild);
+        // cout<<node->data<<" ";
+        // preorderTraversalInner(node->leftChild);
+        // preorderTraversalInner(node->rightChild);
+
+        return;
+    }
+
+    void inorderTraversalInner (TreeNode* node) {
+        if (node == NULL) {
+            return;
+        }
+
+        stack<TreeNode*> st;
+        TreeNode* currNode = node;
+
+        while (currNode != NULL || !st.empty()) {
+            // traverse the left children until the last leftChild
+            while (currNode != NULL) {
+                st.push(currNode);
+                currNode = currNode->leftChild;
+            }
+            // print the 'last' leftChild, it may be in the 'last' layer, or may have rightChild
+            if (!st.empty()) {
+                currNode = st.top();
+                st.pop();
+                cout<<currNode->data<<" ";
+
+                currNode = currNode->rightChild;
+            }
+        }
+
+        // inorderTraversalInner(node->leftChild);
+        // cout<<node->data<<" ";
+        // inorderTraversalInner(node->rightChild);
+
+        return;
+    }
+
+    void postorderTraversalInner (TreeNode* node) {
+        if (node == NULL) {
+            return;
+        }
+
+        stack<TreeNode*> st;
+
+        TreeNode* currNode = node;
+        TreeNode* preNode = NULL; // the last visit node
+
+        while (currNode != NULL || !st.empty()) {
+            // traverse the left children until the last leftChild
+            while (currNode) {
+                st.push(currNode);
+                currNode = currNode->leftChild;
+            }
+            
+            currNode = st.top();
+            st.pop();
+
+            // if the node has no rightChild, print out, and its parent node should be printed if itself is rightChild:
+            // mark this node with preNode, otherwise this node will be printed again when its parent node became currNode and
+            // need to be printed.
+            if (currNode->rightChild == NULL || currNode->rightChild == preNode) {
+                cout<<currNode->data<<" ";
+                preNode = currNode;
+                currNode = NULL;
+            } else {
+                st.push(currNode);
+                currNode = currNode->rightChild;
+            }
+        }
+
+        // postorderTraversalInner(node->leftChild);
+        // postorderTraversalInner(node->rightChild);
+        // cout<<node->data<<" ";
 
         return;
     }
@@ -153,82 +222,26 @@ public:
         return;
     }
     void preorderTraversal () {
-        cout<<"preorderTraversal: "<<endl;
         preorderTraversalInner(root);
         return;
     }
 
+    void inorderTraversal () {
+        inorderTraversalInner(root);
+        return;
+    }
+
+    void postorderTraversal () {
+        postorderTraversalInner(root);
+        return;
+    }
+
     void layerTraversal () {
-        cout<<"layerTraversal: "<<endl;
         layerTraversalInner(root);
 
         return;
     }
 };
-
-TreeNode* CreateBinaryTreeQueue (int arr[], int size) {
-    if (size == 0 || !arr) {
-        return NULL;
-    }
-    
-    TreeNode* root = new TreeNode(arr[0]);
-    queue<TreeNode*> q;
-    q.push(root);
-    
-    int i = 1;
-    //int arr[] = {10, 2, -1, 3, -1, -1, 15, -1, -1}; 3 15 2 10 
-    while (!q.empty() && i < size) {
-        while (!q.empty() && i < size) {
-            if (arr[i] != -1) {
-                TreeNode* currNode = q.front();
-                q.pop();
-                currNode->leftChild = new TreeNode(arr[i]);
-                q.push(currNode->leftChild);
-            }
-            i++;
-        }
-
-        if (i < size && arr[i] != -1) {
-            TreeNode* currNode = q.front();
-            q.pop();
-            currNode->rightChild = new TreeNode(arr[i]);
-            q.push(currNode->rightChild);
-        }
-        i++;
-    }
-    return root;
-}
-
-TreeNode* insert(TreeNode* root, int value) {
-    if (root == NULL) {
-        root = new TreeNode(value);
-
-        return root;
-    }
-
-    queue<TreeNode*> q;
-    q.push(root);
-    while (!q.empty()) {
-        TreeNode* currNode = q.front();
-        q.pop();
-
-        if (currNode->leftChild) {
-            q.push(currNode->leftChild);
-        } else {
-            currNode->leftChild = new TreeNode(value);
-            return root;
-        }
-
-        if (currNode->rightChild) {
-            q.push(currNode->rightChild);
-        } else {
-            currNode->rightChild = new TreeNode(value);
-            return root;
-        }
-    }
-
-    return root;
-}
 
 int main()
 {
@@ -240,11 +253,18 @@ int main()
     bt.CreateBinaryTree(arr, size);
     cout<<endl;
 
+    bt.insertNode(8);
+
+    cout<<"preorder: ";
     bt.preorderTraversal();
     cout<<endl;
 
-    bt.insertNode(8);
-    bt.layerTraversal();
+    cout<<"inorder: ";
+    bt.inorderTraversal();
+    cout<<endl;
+
+    cout<<"postorder: ";
+    bt.postorderTraversal();
     cout<<endl;
 
     return 0;
