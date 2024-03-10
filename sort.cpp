@@ -51,34 +51,6 @@ void insertionSort(int* arr, int size) {
     return;
 }
 
-int partition (int* arr, int left, int right) {
-    int pivot = arr[left];
-    int temp = 0;
-
-    int i = left;
-    int j = right;
-
-    while (i < j) {
-
-        while (i < j && arr[j] >= pivot) {
-            j--;
-        }
-
-        while (i < j && arr[i] <= pivot) {
-            i++;
-        }
-
-        if (i < j) {
-            swap(&arr[i], &arr[j]);
-        }
-    }
-
-    arr[left] = arr[i];
-    arr[i] = pivot;
-
-    return i;
-}
-
 void quickSort(int* arr, int left, int right) {
     if (left >= right) {
         return;
