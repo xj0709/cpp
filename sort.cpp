@@ -84,14 +84,80 @@ void quickSort(int* arr, int left, int right) {
         return;
     }
 
-    int p = partition(arr, left, right);
+    int pivot = arr[left];
+    int temp = 0;
 
-    quickSort(arr, left, p-1);
-    quickSort(arr, p+1, right);
+    int i = left;
+    int j = right;
+
+    while (i < j) {
+
+        while (i < j && arr[j] >= pivot) {
+            j--;
+        }
+
+        while (i < j && arr[i] <= pivot) {
+            i++;
+        }
+
+        if (i < j) {
+            swap(&arr[i], &arr[j]);
+        }
+    }
+
+    arr[left] = arr[i];
+    arr[i] = pivot;
+
+    quickSort(arr, left, i-1);
+    quickSort(arr, i+1, right);
 
     return;
 }
 
+int binarySearch(int arr[], int size, int value) {
+    int low = 0;
+    int high = size - 1;
+
+    if (low >= high) {
+        if (arr[low] != value) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+    }
+    int mid = 0;
+    while (low <= high) {
+        mid = (low+high)/2;
+
+        if (value < arr[mid]) {
+            high = mid - 1;
+        }
+        else if (value > arr[mid]) {
+            low = mid + 1;
+        }
+        else {
+            return mid;
+        }
+    }
+
+    return -1;
+
+}
+
+void testSearch(int arr[], int size) {
+    int target = 3;
+
+    int index = binarySearch(arr, size, target);
+    if (-1 == index) {
+        cout<<target<<" is not found"<<endl;
+    }
+    else {
+        cout<<target<<" is the: "<<index+1<<endl;
+    }
+
+    return;
+}
 
 int main() {
     int arr[] = {15, 6, 3, 8, 5, 15, 11, 18, 10, 7};
@@ -111,6 +177,9 @@ int main() {
     for (int i=0;i<size;i++) {
         cout<<arr[i]<<" ";
     }
-
+    cout<<endl;
+    
+    // testSearch(arr, size);
+    
     return 0;
 }
